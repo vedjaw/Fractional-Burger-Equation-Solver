@@ -1,82 +1,118 @@
-Fractional Burgers' Equation Solver
+# Fractional Burgers' Equation Solver
 
-This repository contains a high-performance Python solver for the Time-Fractional Burgers' Equation, a non-linear partial differential equation (PDE) used to model shock waves and anomalous diffusion.
+This repository contains a high-performance **Python solver** for the **Time-Fractional Burgers' Equation**, a non-linear PDE used to model **shock waves**, **memory effects**, and **anomalous diffusion**.
 
-The solver utilizes a hybrid L1/Crank-Nicolson Predictor-Corrector scheme, ensuring unconditional stability and second-order spatial accuracy.
+It uses a hybrid **L1 fractional derivative + Crank–Nicolson + Predictor–Corrector** numerical scheme, achieving **unconditional stability** and **second-order spatial accuracy**.
 
-The Governing Equation
+## Governing Equation
 
-The code solves the following Time-Fractional Burgers' Equation:
+The solver computes solutions to:
 
-$$\frac{\partial^\alpha u}{\partial t^\alpha} + a u \frac{\partial u}{\partial x} - c \frac{\partial^2 u}{\partial x^2} = 0, \quad (0 < \alpha \le 1)$$
+$$
+\frac{\partial^\alpha u}{\partial t^\alpha} 
++ a\,u\,\frac{\partial u}{\partial x} 
+- c\,\frac{\partial^2 u}{\partial x^2} 
+= 0,\qquad 0 < \alpha \le 1
+$$
 
-Where:
+where:
 
-$u(x,t)$: The velocity field.
+- \( u(x,t) \): velocity  
+- \( \alpha \): fractional order (Caputo)  
+- \( a \): advection coefficient  
+- \( c \): viscosity coefficient  
 
-$\alpha$: Fractional order of the time derivative (Caputo sense).
+# Features
 
-$a$: Advection coefficient.
+- **L1 Caputo fractional derivative**
+- **Crank–Nicolson diffusion**
+- **Predictor–Corrector for nonlinearity**
+- **Scipy tridiagonal solver (`solve_banded`)**
+- User-defined:
+  - \( x_{\max}, t_{\max}, \Delta x, \Delta t \)
+  - \( \alpha, a, c \)
+- Outputs:
+  - Console summary
+  - CSV file of full solution matrix
 
-$c$: Diffusion (viscosity) coefficient.
+# Installation (Dependencies Included Here)
 
-Features
+Dependencies:
 
-Numerical Method: L1 approximation for the fractional time derivative + Crank-Nicolson for spatial discretization + Predictor-Corrector for non-linearity.
+```
+numpy
+scipy
+pandas
+```
 
-Efficiency: Reduces the problem to a tridiagonal linear system, solved efficiently ($O(N)$ complexity) using scipy.linalg.solve_banded.
+Install:
 
-Flexibility: Allows user-defined simulation parameters ($x_{max}, t_{max}, dx, dt$) and equation coefficients ($\alpha, a, c$).
+```bash
+pip install numpy scipy pandas
+```
 
-Output: Generates a tabulated solution of $u(x,t)$ saved to a CSV file.
+OR using a `requirements.txt`:
 
-Installation
-
-Clone the repository (or download the files to a local directory).
-
-Install dependencies: Ensure you have Python installed. Then, install the required libraries using the provided requirements.txt file:
-
+```bash
 pip install -r requirements.txt
+```
 
+# Usage
 
-Usage
+## Step 1: Initial Condition
 
-Configure Initial Conditions (Optional):
-By default, the solver uses a sinusoidal initial condition: $u(x, 0) = \sin(\pi x)$.
-If you wish to simulate a different scenario (e.g., a step function for shock waves), open the python script and modify the initial_condition function:
+Default:
 
-# Example: Change to a step function
+\[
+u(x,0)=\sin(\pi x)
+\]
+
+To change (example: step function):
+
+```python
 def initial_condition(x):
-    return np.where(x < 0.5, 1.0, 0.0) 
+    return np.where(x < 0.5, 1.0, 0.0)
+```
 
+## Step 2: Run
 
-Run the Solver:
-Execute the Python script from your terminal:
-
+```bash
 python fractional_burgers_solver.py
+```
 
+Example input:
 
-(Replace fractional_burgers_solver.py with the actual name of your python file).
-
-Enter Simulation Parameters:
-The program will prompt you for inputs. Example for a standard test case:
-
+```
 --- 1. INPUTS ---
-Enter the max spatial value for x (e.g., 1.0): 1.0
-Enter the max time value for t (e.g., 1.0): 1.0
-Enter the space step (dx, e.g., 0.1): 0.02
-Enter the time step (dt, e.g., 0.1): 0.02
-Enter alpha (0 < alpha <= 1, e.g., 0.5): 0.9
-Enter coefficient a (e.g., 1.0): 1.0
-Enter coefficient c (e.g., 1.0): 0.1
+1.0
+1.0
+0.02
+0.02
+0.9
+1.0
+0.1
+```
 
+# Output
 
-Output
+- Console table of \(u(x,t)\)
+- CSV file:
 
-Console: The program will print a summary table of the computed $u(x,t)$ values to the console.
+```
+fractional_burgers_solution1.csv
+```
 
-CSV File: A file named fractional_burgers_solution1.csv will be saved in the current directory. This file contains the full solution matrix, which can be opened in Excel or used for plotting.
+(rows = time, columns = space)
 
-Theoretical Validation
+# Theoretical Validation
 
-The method has been validated against exact analytical solutions (e.g., Cole-Hopf transformation for $\alpha=1$). The solver exhibits a temporal convergence rate of $O(\Delta t^{2-\alpha})$, confirming the accurate modeling of memory effects.
+- Verified against Cole–Hopf analytical solution when \( \alpha = 1 \)
+- Temporal accuracy of:
+
+\[
+O(\Delta t^{2-\alpha})
+\]
+
+# License
+
+MIT (recommended)
