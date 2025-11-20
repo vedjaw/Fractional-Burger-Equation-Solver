@@ -125,15 +125,16 @@ for n in range(0, M - 1): # Loop from t_0 to t_{M-1} to find t_{n+1}
     
 print("Scheme implementation complete.")
 
-# 3. OUTPUT THE RESULTS
+print("\n 3. FINAL RESULTS TABLE ")
 
-print("\n--- 3. FINAL RESULTS TABLE ---")
-
-# Creating a pandas DataFrame for output
-# Rounding the values for cleaner display
 df = pd.DataFrame(U, index=np.round(t, 4), columns=np.round(x, 4))
 df.index.name = "Time (t)"
 df.columns.name = "Space (x)"
 
-
 print(df)
+
+try:
+    df.to_csv("fractional_burgers_solution1.csv")
+    print("\nResults successfully saved to 'fractional_burgers_solution.csv'")
+except PermissionError:
+    print("\nError: Could not save file. Check if it's open in another program.")
